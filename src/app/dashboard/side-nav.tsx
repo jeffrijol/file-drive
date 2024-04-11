@@ -29,7 +29,7 @@ export function SideNav() {
             "text-blue-500": pathname.includes("/dashboard/favorites"),
           })}
         >
-          <StarIcon /> Contables
+          <StarIcon /> Facturas
         </Button>
       </Link>
 

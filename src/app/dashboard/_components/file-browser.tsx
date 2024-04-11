@@ -49,6 +49,7 @@ export function FileBrowser({
   const user = useUser();
   const [query, setQuery] = useState("");
   const [type, setType] = useState<Doc<"files">["type"] | "all">("all");
+  const [typeCat, setTypeCat] = useState<Doc<"files">["typeCat"] | "all">("all");
 
   let orgId: string | undefined = undefined;
   if (organization.isLoaded && user.isLoaded) {
@@ -68,6 +69,7 @@ export function FileBrowser({
           type: type === "all" ? undefined : type,
           query,
           favorites: favoritesOnly,
+          typeCat: typeCat === "all" ? undefined : typeCat,
           deletedOnly,
         }
       : "skip"
@@ -105,11 +107,11 @@ export function FileBrowser({
           </TabsList>
 
           <div className="flex gap-2 items-center">
-            <Label htmlFor="type-select">Type Filter</Label>
+            <Label htmlFor="type-select">Categoría</Label>
             <Select
-              value={type}
+              value={typeCat}
               onValueChange={(newType) => {
-                setType(newType as any);
+                setTypeCat(newType as any);
               }}
             >
               <SelectTrigger id="type-select" className="w-[180px]">
@@ -117,9 +119,13 @@ export function FileBrowser({
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All</SelectItem>
+                <SelectItem value="Administrativo">Gasto administrativo</SelectItem>
+                <SelectItem value="Inmueble">Inmueble</SelectItem>
+                <SelectItem value="Otros">Otros</SelectItem> 
+                {/* <SelectItem value="all">All</SelectItem>
                 <SelectItem value="image">Image</SelectItem>
                 <SelectItem value="csv">CSV</SelectItem>
-                <SelectItem value="pdf">PDF</SelectItem>
+                <SelectItem value="pdf">PDF</SelectItem>  */}
               </SelectContent>
             </Select>
           </div>

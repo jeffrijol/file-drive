@@ -7,6 +7,12 @@ export const fileTypes = v.union(
   v.literal("pdf")
 );
 
+export const fileTypeCat = v.union(
+  v.literal("Administrativo"),
+  v.literal("Inmueble"),
+  v.literal("Otros")
+);
+
 export const roles = v.union(v.literal("admin"), v.literal("member"));
 
 export default defineSchema({
@@ -16,6 +22,7 @@ export default defineSchema({
     orgId: v.string(),
     fileId: v.id("_storage"),
     userId: v.id("users"),
+    typeCat: fileTypeCat,
     shouldDelete: v.optional(v.boolean()),
   })
     .index("by_orgId", ["orgId"])

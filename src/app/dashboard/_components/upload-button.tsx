@@ -5,6 +5,7 @@ import { useOrganization, useUser } from "@clerk/nextjs";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -21,6 +22,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
 
 import { z } from "zod";
 
@@ -33,6 +42,10 @@ import { Doc } from "../../../../convex/_generated/dataModel";
 
 const formSchema = z.object({
   title: z.string().min(1).max(200),
+  typeCat: z
+  .string({
+    required_error: "Please select an email to display.",
+  }).min(5).max(50),
   file: z
     .custom<FileList>((val) => val instanceof FileList, "Required")
     .refine((files) => files.length > 0, `Required`),
@@ -49,6 +62,7 @@ export function UploadButton() {
     defaultValues: {
       title: "",
       file: undefined,
+      typeCat: "Otros",
     },
   });
 
@@ -60,6 +74,7 @@ export function UploadButton() {
     const postUrl = await generateUploadUrl();
 
     const fileType = values.file[0].type;
+    const fileTypeCat = values.typeCat;
 
     const result = await fetch(postUrl, {
       method: "POST",
@@ -74,12 +89,19 @@ export function UploadButton() {
       "text/csv": "csv",
     } as Record<string, Doc<"files">["type"]>;
 
+    const typeCat = {
+      "Administrativo": "Administrativo",
+      "Inmueble": "Inmueble",
+      "Otros": "Otros",
+    } as Record<string, Doc<"files">["typeCat"]>;
+
     try {
       await createFile({
         name: values.title,
         fileId: storageId,
         orgId,
         type: types[fileType],
+        typeCat: typeCat[fileTypeCat],
       });
 
       form.reset();
@@ -88,14 +110,14 @@ export function UploadButton() {
 
       toast({
         variant: "success",
-        title: "File Uploaded",
-        description: "Now everyone can view your file",
+        title: "Archivo subido",
+        description: "Ahora todos pueden ver su archivo",
       });
     } catch (err) {
       toast({
         variant: "destructive",
-        title: "Something went wrong",
-        description: "Your file could not be uploaded, try again later",
+        title: "Algo salió mal",
+        description: "Su archivo no se pudo cargar, inténtelo más tarde",
       });
     }
   }
@@ -140,6 +162,30 @@ export function UploadButton() {
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="typeCat"
+                render={({ field }) => (
+                  <FormItem>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Seleccione a que categoría quiere relacionar el archivo" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="Administrativo">Gasto administrativo</SelectItem>
+                        <SelectItem value="Inmueble">Inmueble</SelectItem>
+                        <SelectItem value="Otros">Otros</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormDescription>
+                      El archivo se relacionará a la categoría selecionada
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}

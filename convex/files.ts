@@ -7,7 +7,7 @@ import {
   query,
 } from "./_generated/server";
 import { getUser } from "./users";
-import { fileTypes } from "./schema";
+import { fileTypes, fileTypeCat } from "./schema";
 import { Doc, Id } from "./_generated/dataModel";
 
 export const generateUploadUrl = mutation(async (ctx) => {
@@ -58,6 +58,7 @@ export const createFile = mutation({
     fileId: v.id("_storage"),
     orgId: v.string(),
     type: fileTypes,
+    typeCat: fileTypeCat,
   },
   async handler(ctx, args) {
     const hasAccess = await hasAccessToOrg(ctx, args.orgId);
@@ -71,6 +72,7 @@ export const createFile = mutation({
       orgId: args.orgId,
       fileId: args.fileId,
       type: args.type,
+      typeCat: args.typeCat,
       userId: hasAccess.user._id,
     });
   },
@@ -83,6 +85,7 @@ export const getFiles = query({
     favorites: v.optional(v.boolean()),
     deletedOnly: v.optional(v.boolean()),
     type: v.optional(fileTypes),
+    typeCat: v.optional(fileTypeCat),
   },
   async handler(ctx, args) {
     const hasAccess = await hasAccessToOrg(ctx, args.orgId);
@@ -125,6 +128,10 @@ export const getFiles = query({
 
     if (args.type) {
       files = files.filter((file) => file.type === args.type);
+    }
+
+    if (args.typeCat) {
+      files = files.filter((file) => file.typeCat === args.typeCat);
     }
 
     const filesWithUrl = await Promise.all(
