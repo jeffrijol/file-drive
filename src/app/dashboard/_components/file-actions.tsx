@@ -65,8 +65,8 @@ export function FileCardActions({
                 });
                 toast({
                   variant: "default",
-                  title: "File marked for deletion",
-                  description: "Your file will be deleted soon",
+                  title: "Archivo marcado para eliminación",
+                  description: "Su archivo será eliminado pronto",
                 });
               }}
             >
@@ -101,11 +101,11 @@ export function FileCardActions({
           >
             {isFavorited ? (
               <div className="flex gap-1 items-center">
-                <StarIcon className="w-4 h-4" /> Unfavorite
+                <StarIcon className="w-4 h-4" /> No Facturable
               </div>
             ) : (
               <div className="flex gap-1 items-center">
-                <StarHalf className="w-4 h-4" /> Favorite
+                <StarHalf className="w-4 h-4" /> Facturable
               </div>
             )}
           </DropdownMenuItem>

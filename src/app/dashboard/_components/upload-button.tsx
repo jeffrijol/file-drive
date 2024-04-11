@@ -118,13 +118,13 @@ export function UploadButton() {
       }}
     >
       <DialogTrigger asChild>
-        <Button>Upload File</Button>
+        <Button>Subir archivo</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle className="mb-8">Upload your File Here</DialogTitle>
+          <DialogTitle className="mb-8">Descargue su archivo aquí</DialogTitle>
           <DialogDescription>
-            This file will be accessible by anyone in your organization
+          Cualquier persona de su organización podrá acceder a este archivo.
           </DialogDescription>
         </DialogHeader>
 
@@ -136,7 +136,7 @@ export function UploadButton() {
                 name="title"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Title</FormLabel>
+                    <FormLabel>Titulo</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
@@ -150,7 +150,7 @@ export function UploadButton() {
                 name="file"
                 render={() => (
                   <FormItem>
-                    <FormLabel>File</FormLabel>
+                    <FormLabel>Archivo</FormLabel>
                     <FormControl>
                       <Input type="file" {...fileRef} />
                     </FormControl>
@@ -166,7 +166,7 @@ export function UploadButton() {
                 {form.formState.isSubmitting && (
                   <Loader2 className="h-4 w-4 animate-spin" />
                 )}
-                Submit
+                Subir
               </Button>
             </form>
           </Form>

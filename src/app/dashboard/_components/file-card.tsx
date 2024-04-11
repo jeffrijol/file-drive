@@ -59,7 +59,7 @@ export function FileCard({
           {userProfile?.name}
         </div>
         <div className="text-xs text-gray-700">
-          Uploaded on {formatRelative(new Date(file._creationTime), new Date())}
+          Subido el {formatRelative(new Date(file._creationTime), new Date())}
         </div>
       </CardFooter>
     </Card>
