@@ -48,8 +48,9 @@ export function FileBrowser({
   const organization = useOrganization();
   const user = useUser();
   const [query, setQuery] = useState("");
-  const [type, setType] = useState<Doc<"files">["type"] | "all">("all");
-  const [typeCat, setTypeCat] = useState<Doc<"files">["typeCat"] | "all">("all");
+  const [type, setType] = useState<Doc<"files">["type"] | "todos">("todos");
+  const [typeCat, setTypeCat] = useState<Doc<"files">["typeCat"] | "todos">("todos");  
+  const [filePeriod, setFilePeriod] = useState<Doc<"files">["filePeriod"] | "todos">("todos");
 
   let orgId: string | undefined = undefined;
   if (organization.isLoaded && user.isLoaded) {
@@ -66,10 +67,11 @@ export function FileBrowser({
     orgId
       ? {
           orgId,
-          type: type === "all" ? undefined : type,
+          type: type === "todos" ? undefined : type,
           query,
           favorites: favoritesOnly,
-          typeCat: typeCat === "all" ? undefined : typeCat,
+          typeCat: typeCat === "todos" ? undefined : typeCat,
+          filePeriod: filePeriod === "todos" ? undefined : filePeriod,
           deletedOnly,
         }
       : "skip"
@@ -118,14 +120,31 @@ export function FileBrowser({
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All</SelectItem>
+                <SelectItem value="todos">Todos</SelectItem>
                 <SelectItem value="Administrativo">Gasto administrativo</SelectItem>
                 <SelectItem value="Inmueble">Inmueble</SelectItem>
                 <SelectItem value="Otros">Otros</SelectItem> 
-                {/* <SelectItem value="all">All</SelectItem>
-                <SelectItem value="image">Image</SelectItem>
-                <SelectItem value="csv">CSV</SelectItem>
-                <SelectItem value="pdf">PDF</SelectItem>  */}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="flex gap-2 items-center">
+            <Label htmlFor="type-select">Período</Label>
+            <Select
+              value={filePeriod}
+              onValueChange={(newType) => {
+                setFilePeriod(newType as any);
+              }}
+            >
+              <SelectTrigger id="type-select" className="w-[180px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="todos">Todos</SelectItem>
+                <SelectItem value="I-24">I-24</SelectItem>
+                <SelectItem value="II-24">II-24</SelectItem>
+                <SelectItem value="III-24">III-24</SelectItem>
+                <SelectItem value="IV-24">IV-24</SelectItem>
               </SelectContent>
             </Select>
           </div>

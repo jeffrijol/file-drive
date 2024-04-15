@@ -7,6 +7,7 @@ import { useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { FileCardActions } from "./file-actions";
+import { StarHalf, StarIcon } from "lucide-react";
 
 function UserCell({ userId }: { userId: Id<"users"> }) {
   const userProfile = useQuery(api.users.getUserProfile, {
@@ -31,8 +32,14 @@ export const columns: ColumnDef<
     header: "Nombre",
   },
   {
-    accessorKey: "type",
-    header: "Tipo",
+    cell: ({ row }) => {
+      return (
+        <div className="flex gap-2 items-center">
+          {row.original.typeCat} - {row.original.filePeriod}
+        </div>
+      );
+    },
+    header: "Categoría",
   },
   {
     header: "Usuario",

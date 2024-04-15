@@ -44,8 +44,12 @@ const formSchema = z.object({
   title: z.string().min(1).max(200),
   typeCat: z
   .string({
-    required_error: "Please select an email to display.",
+    required_error: "Por favor indicar una categoría.",
   }).min(5).max(50),
+  filePeriod: z
+  .string({
+    required_error: "Por favor indicar un período fiscal.",
+  }).min(4).max(9),
   file: z
     .custom<FileList>((val) => val instanceof FileList, "Required")
     .refine((files) => files.length > 0, `Required`),
@@ -63,6 +67,7 @@ export function UploadButton() {
       title: "",
       file: undefined,
       typeCat: "Otros",
+      filePeriod: "I-24",
     },
   });
 
@@ -74,7 +79,8 @@ export function UploadButton() {
     const postUrl = await generateUploadUrl();
 
     const fileType = values.file[0].type;
-    const fileTypeCat = values.typeCat;
+    const fileTypeCat = values.typeCat;    
+    const filePeriods = values.filePeriod;
 
     const result = await fetch(postUrl, {
       method: "POST",
@@ -95,6 +101,13 @@ export function UploadButton() {
       "Otros": "Otros",
     } as Record<string, Doc<"files">["typeCat"]>;
 
+    const filePeriod = {
+      "I-24": "I-24",
+      "II-24": "II-24",
+      "III-24": "III-24",
+      "IV-24": "IV-24",
+    } as Record<string, Doc<"files">["filePeriod"]>;
+
     try {
       await createFile({
         name: values.title,
@@ -102,6 +115,7 @@ export function UploadButton() {
         orgId,
         type: types[fileType],
         typeCat: typeCat[fileTypeCat],
+        filePeriod: filePeriod[filePeriods],
       });
 
       form.reset();
@@ -174,7 +188,7 @@ export function UploadButton() {
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Seleccione a que categoría quiere relacionar el archivo" />
+                          <SelectValue  placeholder="Seleccione a que categoría quiere relacionar el archivo" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
@@ -185,6 +199,31 @@ export function UploadButton() {
                     </Select>
                     <FormDescription>
                       El archivo se relacionará a la categoría selecionada
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="filePeriod"
+                render={({ field }) => (
+                  <FormItem>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue  placeholder="Seleccione el período al quiere relacionar el archivo" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="I-24">I-24</SelectItem>
+                        <SelectItem value="II-24">II-24</SelectItem>
+                        <SelectItem value="III-24">III-24</SelectItem>
+                        <SelectItem value="IV-24">IV-24</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormDescription>
+                      El archivo se relacionará al período selecionado
                     </FormDescription>
                     <FormMessage />
                   </FormItem>

@@ -13,6 +13,13 @@ export const fileTypeCat = v.union(
   v.literal("Otros")
 );
 
+export const filePeriods = v.union(
+  v.literal("I-24"),
+  v.literal("II-24"),
+  v.literal("III-24"),
+  v.literal("IV-24")
+);
+
 export const roles = v.union(v.literal("admin"), v.literal("member"));
 
 export default defineSchema({
@@ -23,6 +30,7 @@ export default defineSchema({
     fileId: v.id("_storage"),
     userId: v.id("users"),
     typeCat: fileTypeCat,
+    filePeriod: filePeriods,
     shouldDelete: v.optional(v.boolean()),
   })
     .index("by_orgId", ["orgId"])
