@@ -5,7 +5,7 @@
 
 import { SideNav } from "./side-nav";
 
-export default function DashboardLayout({
+export default function FilesLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;

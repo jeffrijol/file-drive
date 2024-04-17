@@ -2,11 +2,10 @@
 import { useOrganization, useUser } from "@clerk/nextjs";
 import { useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
-import { UploadButton } from "./upload-button";
+import { UploadButton } from "./file-upload-button";
 import { FileCard } from "./file-card";
 import Image from "next/image";
 import { GridIcon, Loader2, RowsIcon } from "lucide-react";
-import { SearchBar } from "./search-bar";
 import { useState } from "react";
 import { DataTable } from "./file-table";
 import { columns } from "./columns";
@@ -20,6 +19,7 @@ import {
 } from "@/components/ui/select";
 import { Doc } from "../../../../convex/_generated/dataModel";
 import { Label } from "@/components/ui/label";
+import { SearchBar } from "./search-bar";
 
 function Placeholder() {
   return (
@@ -91,7 +91,7 @@ export function FileBrowser({
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-4xl font-bold">{title}</h1>
 
-        <SearchBar query={query} setQuery={setQuery} />
+        <SearchBar query={query} setQuery={setQuery} placeholdertext= "nombre del archivo"/>
 
         <UploadButton />
       </div>

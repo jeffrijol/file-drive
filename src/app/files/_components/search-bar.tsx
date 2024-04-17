@@ -21,9 +21,11 @@ const formSchema = z.object({
 export function SearchBar({
   query,
   setQuery,
+  placeholdertext,
 }: {
   query: string;
   setQuery: Dispatch<SetStateAction<string>>;
+  placeholdertext: string;
 }) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -49,7 +51,7 @@ export function SearchBar({
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Input {...field} placeholder="nombre de archivo" />
+                  <Input {...field} placeholder={ placeholdertext } />
                 </FormControl>
                 <FormMessage />
               </FormItem>

@@ -21,7 +21,13 @@ export function Header() {
 
         <SignedIn>
           <Button variant={"outline"}>
-            <Link href="/dashboard/files">Tus Archivos</Link>
+            <Link href="/files">Tus Archivos</Link>
+          </Button>
+        </SignedIn>
+
+        <SignedIn>
+          <Button variant={"outline"}>
+            <Link href="/files">Inmuebles</Link>
           </Button>
         </SignedIn>
 

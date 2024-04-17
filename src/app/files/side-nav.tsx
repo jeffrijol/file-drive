@@ -11,33 +11,33 @@ export function SideNav() {
 
   return (
     <div className="w-40 flex flex-col gap-4">
-      <Link href="/dashboard/files">
+      <Link href="/files">
         <Button
           variant={"link"}
           className={clsx("flex gap-2", {
-            "text-blue-500": pathname.includes("/dashboard/files"),
+            "text-blue-500": pathname.includes("/files"),
           })}
         >
           <FileIcon /> Todos
         </Button>
       </Link>
 
-      <Link href="/dashboard/favorites">
+      <Link href="/files/favorites">
         <Button
           variant={"link"}
           className={clsx("flex gap-2", {
-            "text-blue-500": pathname.includes("/dashboard/favorites"),
+            "text-blue-500": pathname.includes("/files/favorites"),
           })}
         >
           <StarIcon /> Facturas
         </Button>
       </Link>
 
-      <Link href="/dashboard/trash">
+      <Link href="/files/trash">
         <Button
           variant={"link"}
           className={clsx("flex gap-2", {
-            "text-blue-500": pathname.includes("/dashboard/trash"),
+            "text-blue-500": pathname.includes("/files/trash"),
           })}
         >
           <TrashIcon /> Eliminados
