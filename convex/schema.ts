@@ -1,6 +1,7 @@
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 
+//TODO automatizar para que sea configurable en la BD (esquema)
 export const fileTypes = v.union(
   v.literal("image"),
   v.literal("csv"),
@@ -35,11 +36,13 @@ export default defineSchema({
   })
     .index("by_orgId", ["orgId"])
     .index("by_shouldDelete", ["shouldDelete"]),
+
   favorites: defineTable({
     fileId: v.id("files"),
     orgId: v.string(),
     userId: v.id("users"),
   }).index("by_userId_orgId_fileId", ["userId", "orgId", "fileId"]),
+  
   users: defineTable({
     tokenIdentifier: v.string(),
     name: v.optional(v.string()),

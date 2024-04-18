@@ -27,7 +27,7 @@ export function Header() {
 
         <SignedIn>
           <Button variant={"outline"}>
-            <Link href="/files">Inmuebles</Link>
+            <Link href="/apartments">Inmuebles</Link>
           </Button>
         </SignedIn>
 
