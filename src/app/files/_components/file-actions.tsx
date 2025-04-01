@@ -1,151 +1,79 @@
-import { Doc, Id } from "../../../../convex/_generated/dataModel";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  FileIcon,
-  MoreVertical,
-  StarHalf,
-  StarIcon,
-  TrashIcon,
-  UndoIcon,
-} from "lucide-react";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { useState } from "react";
-import { useMutation, useQuery } from "convex/react";
-import { api } from "../../../../convex/_generated/api";
-import { useToast } from "@/components/ui/use-toast";
-import { Protect } from "@clerk/nextjs";
+'use client'
 
-export function FileCardActions({
-  file,
-  isFavorited,
-}: {
-  file: Doc<"files"> & { url: string | null };
-  isFavorited: boolean;
-}) {
-  const deleteFile = useMutation(api.files.deleteFile);
-  const restoreFile = useMutation(api.files.restoreFile);
-  const toggleFavorite = useMutation(api.files.toggleFavorite);
-  const { toast } = useToast();
-  const me = useQuery(api.users.getMe);
+import { createClient } from '@/lib/supabase/client'
+import { Database } from '@/types/supabase'
+import { Button } from '@/components/ui/button'
+import { TrashIcon, DownloadIcon } from '@radix-ui/react-icons'
+import { useToast } from '@/components/ui/use-toast'
 
-  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+type FileType = Database['public']['Tables']['files']['Row']
+
+export function FileActions({ file }: { file: FileType }) {
+  const supabase = createClient()
+  const { toast } = useToast()
+
+  const handleDownload = async () => {
+    try {
+      const { data } = supabase.storage
+        .from('files')
+        .getPublicUrl(file.storage_path)
+      
+      if (!data?.publicUrl) throw new Error('URL no disponible')
+      window.open(data.publicUrl, '_blank')
+    } catch (error) {
+      toast({
+        title: 'Error al descargar',
+        description: 'No se pudo obtener el enlace del archivo',
+        variant: 'destructive'
+      })
+    }
+  }
+
+  const handleDelete = async () => {
+    try {
+      // Eliminar de storage
+      const { error: storageError } = await supabase.storage
+        .from('files')
+        .remove([file.storage_path])
+
+      if (storageError) throw storageError
+
+      // Eliminar metadata
+      const { error: dbError } = await supabase
+        .from('files')
+        .delete()
+        .eq('id', file.id)
+
+      if (dbError) throw dbError
+
+      toast({ title: 'Archivo eliminado exitosamente' })
+    } catch (error) {
+      toast({
+        title: 'Error al eliminar',
+        description: error instanceof Error ? error.message : 'Error desconocido',
+        variant: 'destructive'
+      })
+    }
+  }
 
   return (
-    <>
-      <AlertDialog open={isConfirmOpen} onOpenChange={setIsConfirmOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This action will mark the file for our deletion process. Files are
-              deleted periodically
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={async () => {
-                await deleteFile({
-                  fileId: file._id,
-                });
-                toast({
-                  variant: "default",
-                  title: "Archivo marcado para eliminación",
-                  description: "Su archivo será eliminado pronto",
-                });
-              }}
-            >
-              Continue
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
-      <DropdownMenu>
-        <DropdownMenuTrigger>
-          <MoreVertical />
-        </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <DropdownMenuItem
-            onClick={() => {
-              if (!file.url) return;
-              window.open(file.url, "_blank");
-            }}
-            className="flex gap-1 items-center cursor-pointer"
-          >
-            <FileIcon className="w-4 h-4" /> Download
-          </DropdownMenuItem>
-
-          <DropdownMenuItem
-            onClick={() => {
-              toggleFavorite({
-                fileId: file._id,
-              });
-            }}
-            className="flex gap-1 items-center cursor-pointer"
-          >
-            {isFavorited ? (
-              <div className="flex gap-1 items-center">
-                <StarIcon className="w-4 h-4" /> No Facturable
-              </div>
-            ) : (
-              <div className="flex gap-1 items-center">
-                <StarHalf className="w-4 h-4" /> Facturable
-              </div>
-            )}
-          </DropdownMenuItem>
-
-          <Protect
-            condition={(check) => {
-              return (
-                check({
-                  role: "org:admin",
-                }) || file.userId === me?._id
-              );
-            }}
-            fallback={<></>}
-          >
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={() => {
-                if (file.shouldDelete) {
-                  restoreFile({
-                    fileId: file._id,
-                  });
-                } else {
-                  setIsConfirmOpen(true);
-                }
-              }}
-              className="flex gap-1 items-center cursor-pointer"
-            >
-              {file.shouldDelete ? (
-                <div className="flex gap-1 text-green-600 items-center cursor-pointer">
-                  <UndoIcon className="w-4 h-4" /> Restore
-                </div>
-              ) : (
-                <div className="flex gap-1 text-red-600 items-center cursor-pointer">
-                  <TrashIcon className="w-4 h-4" /> Delete
-                </div>
-              )}
-            </DropdownMenuItem>
-          </Protect>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </>
-  );
+    <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={handleDownload}
+        className="text-blue-600 hover:bg-blue-50"
+      >
+        <DownloadIcon className="w-4 h-4" />
+      </Button>
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={handleDelete}
+        className="text-red-600 hover:bg-red-50"
+      >
+        <TrashIcon className="w-4 h-4" />
+      </Button>
+    </div>
+  )
 }

@@ -1,0 +1,42 @@
+Supabase
+Organización: 	Avance
+proyecto: 		file-drive
+pass BD:  		7OXI9d5GveRe9TL8
+Project ID: 	ahknxblyeufpicwjsiow
+Callback URL (for OAuth)
+https://ahknxblyeufpicwjsiow.supabase.co/auth/v1/callback
+
+Google cloud 
+OAuth
+ID de cliente
+1046420429161-3eo1mhsu6gq2fq4h7d3rbneiivm9m0h2.apps.googleusercontent.com
+Secreto del cliente
+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
+Fecha de creación
+25 de marzo de 2025
+
+Genera tipos TypeScript (para usar luego en código):
+(npx supabase gen types typescript --project-id your-project-id > src/types/supabase.ts)
+npx supabase gen types typescript --project-id ahknxblyeufpicwjsiow > src/types/supabase.ts
+
+Ya realice la configuración en supabase. Quiero continuar con el "Flujo de Autenticación Completo".
+Esta implementación tiene que mantener todas las funcionalidades claves y la relación usuario-organización, 
+pero con el mejor código y patrones de diseño que hagan del stack ser autohostable y con un control directo sobre la base de datos.
+Por facvor darme los pasos primero indicando todo lo que debo eliminar de Clerk, los comandos para actualizar Next js y luego todo lo 
+necesario para implementar la nueva integración con Supabase.
+El flujo que pienso debes implementar y darme el código(corregir si crees que puede tener una arquitectura de software mejor) es el siguiente:
+1-Usuario hace clic en GoogleSignInButton
+2-Supabase redirige a Google OAuth
+3-Google retorna a /api/auth/callback (manejo automático)
+4- En En Supabase SQL Editor crear un Trigger llamado  "handle_new_user" para manejar nuevos usuarios que se encarga de:
+	Insertar en public.users (insert into public.users (id, email, name, image_url))
+	Crear organización personal (insert into public.organizations(name))
+	Relación en organization_members para Asignar usuario a la organización (insert into public.organization_members(user_id, org_id, role))
+	Activar trigger para nuevos usuarios
+5-Sesión se mantiene en cookies
+6-Componentes acceden al usuario con useSession()
+
+Ya realice la configuración en supabase, muchas gracias. Quiero continuar con el "Flujo de Autenticación Completo". Esta implementación tiene que mantener todas las funcionalidades claves y la relación usuario-organización, pero con el mejor código y patrones de diseño que hagan del stack ser autohostable y con un control directo sobre la base de datos.Por facvor darme los pasos primero indicando todo lo que debo eliminar de Clerk, los comandos para actualizar Next js y luego todo lo necesario para implementar la nueva integración con Supabase.
+Tengo las siguientes referencias de ejemplo por si quieres considerarlas: https://supabase.com/docs/guides/auth/server-side/nextjs y https://supabase.com/docs/guides/auth/social-login/auth-google. Si consideras que estos ejemplos no te sirven como referencia puedes ignoralos aunque me parecen que pueden ayudarte a darme el mejor código.
+Quiero un buen uso de roles de usuario, manejo de sesion y en supabase los Trigger necesarios para el mantenimiento de usuarios y organización, tomando
+en cuenta que luego vamos a manejar el storage y la tabla Files. 

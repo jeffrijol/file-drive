@@ -1,67 +1,43 @@
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { formatRelative } from "date-fns";
+'use client'
 
-import { Doc } from "../../../../convex/_generated/dataModel";
-import { FileTextIcon, GanttChartIcon, ImageIcon } from "lucide-react";
-import { ReactNode } from "react";
-import { useQuery } from "convex/react";
-import { api } from "../../../../convex/_generated/api";
-import Image from "next/image";
-import { FileCardActions } from "./file-actions";
+import { Database } from '@/types/supabase'
+import { FileActions } from './file-actions'
+import { createClient } from '@/lib/supabase/client'
+import { FileTextIcon, ImageIcon } from '@radix-ui/react-icons'
 
-export function FileCard({
-  file,
-}: {
-  file: Doc<"files"> & { isFavorited: boolean; url: string | null };
-}) {
-  const userProfile = useQuery(api.users.getUserProfile, {
-    userId: file.userId,
-  });
+type FileType = Database['public']['Tables']['files']['Row']
 
-  const typeIcons = {
-    image: <ImageIcon />,
-    pdf: <FileTextIcon />,
-    csv: <GanttChartIcon />,
-  } as Record<Doc<"files">["type"], ReactNode>;
+const getFileIcon = (type: string) => {
+  if (type.startsWith('image/')) return <ImageIcon className="w-6 h-6" />
+  return <FileTextIcon className="w-6 h-6" />
+}
+
+export function FileCard({ file }: { file: FileType }) {
+  const supabase = createClient()
+  
+  const getFileSize = () => {
+    if (!file.size) return ''
+    const sizeInMB = (file.size / 1024 / 1024).toFixed(2)
+    return `${sizeInMB} MB`
+  }
 
   return (
-    <Card>
-      <CardHeader className="relative">
-        <CardTitle className="flex gap-2 text-base font-normal">
-          <div className="flex justify-center">{typeIcons[file.type]}</div>{" "}
-          {file.name}{" ("}{file.typeCat}{" "}{file.filePeriod}{" )"}
-        </CardTitle>
-        <div className="absolute top-2 right-2">
-          <FileCardActions isFavorited={file.isFavorited} file={file} />
+    <div className="group border rounded-lg p-4 hover:bg-accent transition-colors relative">
+      <div className="flex items-start gap-4">
+        <div className="flex-shrink-0 text-muted-foreground">
+          {getFileIcon(file.type)}
         </div>
-      </CardHeader>
-      <CardContent className="h-[200px] flex justify-center items-center">
-        {file.type === "image" && file.url && (
-          <Image alt={file.name} width="200" height="100" src={file.url} />
-        )}
-
-        {file.type === "csv" && <GanttChartIcon className="w-20 h-20" />}
-        {file.type === "pdf" && <FileTextIcon className="w-20 h-20" />}
-      </CardContent>
-      <CardFooter className="flex justify-between">
-        <div className="flex gap-2 text-xs text-gray-700 w-40 items-center">
-          <Avatar className="w-6 h-6">
-            <AvatarImage src={userProfile?.image} />
-            <AvatarFallback>CN</AvatarFallback>
-          </Avatar>
-          {userProfile?.name}
+        <div className="flex-1">
+          <h3 className="font-medium truncate">{file.name}</h3>
+          <p className="text-sm text-muted-foreground">
+            {new Date(file.created_at).toLocaleDateString()}
+          </p>
+          {file.size && (
+            <p className="text-xs text-muted-foreground">{getFileSize()}</p>
+          )}
         </div>
-        <div className="text-xs text-gray-700">
-          Subido el {formatRelative(new Date(file._creationTime), new Date())}
-        </div>
-      </CardFooter>
-    </Card>
-  );
+      </div>
+      <FileActions file={file} />
+    </div>
+  )
 }

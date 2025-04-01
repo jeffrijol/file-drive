@@ -1,46 +1,32 @@
-import { Button } from "@/components/ui/button";
-import {
-  OrganizationSwitcher,
-  SignInButton,
-  SignedIn,
-  SignedOut,
-  UserButton,
-  useSession,
-} from "@clerk/nextjs";
-import Image from "next/image";
-import Link from "next/link";
+'use client'
+
+import Link from 'next/link'
+import { UserButton } from '@/components/user-button'
+import { useUser } from '@/providers/user-provider'
 
 export function Header() {
+  const { user } = useUser()
+
   return (
-    <div className="relative z-10 border-b py-4 bg-gray-50">
-      <div className="items-center container mx-auto justify-between flex">
-        <Link href="/" className="flex gap-2 items-center text-xl text-black">
-          <Image src="/7.jpg" width="50" height="50" alt="file drive logo" /> 
-          Avanze Gestiona
+    <header className="border-b py-4">
+      <div className="container flex items-center justify-between">
+        <Link href="/" className="text-xl font-bold">
+          FileDrive
         </Link>
 
-        <SignedIn>
-          <Button variant={"outline"}>
-            <Link href="/files">Tus Archivos</Link>
-          </Button>
-        </SignedIn>
-
-        <SignedIn>
-          <Button variant={"outline"}>
-            <Link href="/apartments">Inmuebles</Link>
-          </Button>
-        </SignedIn>
-
-        <div className="flex gap-2">
-          <OrganizationSwitcher />
-          <UserButton />
-          <SignedOut>
-            <SignInButton>
-              <Button>Sign In</Button>
-            </SignInButton>
-          </SignedOut>
-        </div>
+        <nav className="flex items-center gap-4">
+          {user ? (
+            <>
+              <Link href="/dashboard">Dashboard</Link>
+              <UserButton user={user} />
+            </>
+          ) : (
+            <Link href="/login" className="btn">
+              Login
+            </Link>
+          )}
+        </nav>
       </div>
-    </div>
-  );
+    </header>
+  )
 }
