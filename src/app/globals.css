@@ -1,4 +1,4 @@
-@layer theme, base, components, utilities;
+@import "tailwindcss";
 
 @layer base {
   :root {
@@ -46,11 +46,23 @@
     --ring: 224.3 76.3% 48%;
   }
 
-  * {
-    @layer border-border;
+  /* Aplicaciones válidas de @apply */
+  .dashboard-layout {
+    @apply min-h-screen w-full bg-background text-foreground;
   }
-  body {
-    @layer bg-background, text-foreground;
-    font-feature-settings: "rlig" 1, "calt" 1;
+
+  .sidebar {
+    @apply hidden border-r bg-muted/40 md:block;
+  }
+
+  .main-content {
+    @apply flex flex-col;
+  }
+}
+
+/* Componentes personalizados */
+@layer components {
+  .nav-link {
+    @apply flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary;
   }
 }

@@ -1,15 +1,16 @@
 import { Metadata } from 'next'
+import { Suspense } from 'react'
 import { UserProvider } from '@/providers/user-provider'
 import { OrganizationProvider } from '@/providers/organization-provider'
 import { Header } from './header'
 import { Footer } from './footer'
 import { Toaster } from '@/components/ui/toaster'
-import { Suspense } from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
+import './globals.css'
 
 export const metadata: Metadata = {
   title: 'FileDrive',
-  description: 'Almacenamiento en la nube seguro',
+  description: 'Tu almacenamiento en la nube seguro',
 }
 
 export default function RootLayout({
@@ -30,7 +31,7 @@ export default function RootLayout({
               {children}
             </main>
 
-            <Suspense fallback={<Skeleton className="h-20 w-full" />}>
+            <Suspense fallback={<Skeleton className="h-20 w-full mt-auto" />}>
               <Footer />
             </Suspense>
             
