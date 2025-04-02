@@ -14,6 +14,7 @@ export type Database = {
           created_at: string | null
           created_by: string | null
           id: string
+          is_favorite: boolean | null
           name: string
           org_id: string | null
           storage_path: string
@@ -23,6 +24,7 @@ export type Database = {
           created_at?: string | null
           created_by?: string | null
           id?: string
+          is_favorite?: boolean | null
           name: string
           org_id?: string | null
           storage_path: string
@@ -32,6 +34,7 @@ export type Database = {
           created_at?: string | null
           created_by?: string | null
           id?: string
+          is_favorite?: boolean | null
           name?: string
           org_id?: string | null
           storage_path?: string

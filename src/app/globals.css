@@ -1,8 +1,5 @@
-@import "tailwindcss/preflight";
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
- 
+@layer theme, base, components, utilities;
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -48,13 +45,12 @@
     --input: 217.2 32.6% 17.5%;
     --ring: 224.3 76.3% 48%;
   }
-}
 
-@layer base {
   * {
-    @apply border-border;
+    @layer border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @layer bg-background, text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
   }
 }

@@ -1,73 +1,50 @@
-"use client";
+'use client'
 
-import { ColumnDef } from "@tanstack/react-table";
-import { Doc, Id } from "../../../../convex/_generated/dataModel";
-import { formatRelative } from "date-fns";
-import { useQuery } from "convex/react";
-import { api } from "../../../../convex/_generated/api";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { FileCardActions } from "./file-actions";
-import { StarHalf, StarIcon } from "lucide-react";
+import { ColumnDef } from '@tanstack/react-table'
+import { Database } from '@/types/supabase'
+import { FileIcon } from '@/components/file-icon'
+import { formatDate } from '@/lib/date-utils'
+import { FileActions } from './file-actions'
 
-function UserCell({ userId }: { userId: Id<"users"> }) {
-  const userProfile = useQuery(api.users.getUserProfile, {
-    userId: userId,
-  });
-  return (
-    <div className="flex gap-2 text-xs text-gray-700 w-40 items-center">
-      <Avatar className="w-6 h-6">
-        <AvatarImage src={userProfile?.image} />
-        <AvatarFallback>CN</AvatarFallback>
-      </Avatar>
-      {userProfile?.name}
-    </div>
-  );
-}
+type FileType = Database['public']['Tables']['files']['Row']
 
-export const columns: ColumnDef<
-  Doc<"files"> & { url: string; isFavorited: boolean }
->[] = [
+export const columns: ColumnDef<FileType>[] = [
   {
-    accessorKey: "name",
-    header: "Nombre",
+    accessorKey: 'name',
+    header: 'Nombre',
+    cell: ({ row }) => (
+      <div className="flex items-center gap-3">
+        <FileIcon 
+          type={row.original.type} 
+          className="w-5 h-5 text-muted-foreground" 
+        />
+        <span className="font-medium truncate">
+          {row.getValue('name')}
+        </span>
+      </div>
+    ),
   },
   {
-    cell: ({ row }) => {
-      return (
-        <div className="flex gap-2 items-center">
-          {row.original.typeCat} - {row.original.filePeriod}
-        </div>
-      );
-    },
-    header: "Categoría",
+    accessorKey: 'type',
+    header: 'Tipo',
+    cell: ({ row }) => (
+      <span className="text-muted-foreground text-sm capitalize">
+        {row.original.type.split('/').pop()}
+      </span>
+    ),
   },
   {
-    header: "Usuario",
-    cell: ({ row }) => {
-      return <UserCell userId={row.original.userId} />;
-    },
+    accessorKey: 'created_at',
+    header: 'Fecha de Creación',
+    cell: ({ row }) => (
+      <span className="text-muted-foreground text-sm">
+        {formatDate(row.original.created_at)}
+      </span>
+    ),
   },
   {
-    header: "Subido el",
-    cell: ({ row }) => {
-      return (
-        <div>
-          {formatRelative(new Date(row.original._creationTime), new Date())}
-        </div>
-      );
-    },
+    id: 'actions',
+    cell: ({ row }) => <FileActions file={row.original} />,
+    enableHiding: false,
   },
-  {
-    header: "Acciones",
-    cell: ({ row }) => {
-      return (
-        <div>
-          <FileCardActions
-            file={row.original}
-            isFavorited={row.original.isFavorited}
-          />
-        </div>
-      );
-    },
-  },
-];
+]

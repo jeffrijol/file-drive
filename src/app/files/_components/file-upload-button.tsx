@@ -2,9 +2,8 @@
 
 import { createClient } from '@/lib/supabase/client'
 import { Database } from '@/types/supabase'
-import { Button } from '@/components/ui/button'
 import { useToast } from '@/components/ui/use-toast'
-import { FileUploadIcon } from '@radix-ui/react-icons'
+import { UploadIcon } from '@radix-ui/react-icons'
 
 type FileType = Database['public']['Tables']['files']['Insert']
 
@@ -57,7 +56,7 @@ export function FileUploadButton({ orgId }: { orgId: string }) {
         onChange={(e) => e.target.files?.[0] && handleUpload(e.target.files[0])}
         aria-label="Subir archivo"
       />
-      <FileUploadIcon className="w-8 h-8 text-muted-foreground group-hover:text-primary" />
+      <UploadIcon className="w-8 h-8 text-muted-foreground group-hover:text-primary" />
       <p className="text-sm text-muted-foreground">
         Arrastra archivos o haz clic para subir
       </p>
