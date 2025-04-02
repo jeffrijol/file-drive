@@ -38,7 +38,7 @@ export const columns: ColumnDef<FileType>[] = [
     header: 'Fecha de Creación',
     cell: ({ row }) => (
       <span className="text-muted-foreground text-sm">
-        {formatDate(row.original.created_at)}
+        {row.original.created_at ? formatDate(row.original.created_at) : 'Fecha no disponible'}
       </span>
     ),
   },

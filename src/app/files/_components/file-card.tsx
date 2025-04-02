@@ -15,11 +15,11 @@ const getFileIcon = (type: string) => {
 export function FileCard({ file }: { file: FileType }) {
   const supabase = createClient()
   
-  const getFileSize = () => {
+  /* const getFileSize = () => {
     if (!file.size) return ''
     const sizeInMB = (file.size / 1024 / 1024).toFixed(2)
     return `${sizeInMB} MB`
-  }
+  } */
 
   return (
     <div className="group border rounded-lg p-4 hover:bg-accent transition-colors relative">
@@ -30,11 +30,11 @@ export function FileCard({ file }: { file: FileType }) {
         <div className="flex-1">
           <h3 className="font-medium truncate">{file.name}</h3>
           <p className="text-sm text-muted-foreground">
-            {new Date(file.created_at).toLocaleDateString()}
+            {file.created_at ? new Date(file.created_at).toLocaleDateString() : 'Unknown date'}
           </p>
-          {file.size && (
+          {/* {file.size && (
             <p className="text-xs text-muted-foreground">{getFileSize()}</p>
-          )}
+          )} */}
         </div>
       </div>
       <FileActions file={file} />

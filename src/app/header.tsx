@@ -3,9 +3,21 @@
 import Link from 'next/link'
 import { UserButton } from '@/components/user-button'
 import { useUser } from '@/providers/user-provider'
+import { Skeleton } from '@/components/ui/skeleton'
 
 export function Header() {
-  const { user } = useUser()
+  const { user, isLoading } = useUser()
+
+  if (isLoading) {
+    return (
+      <header className="border-b py-4">
+        <div className="container flex items-center justify-between">
+          <Skeleton className="h-6 w-32" />
+          <Skeleton className="h-10 w-24 rounded-md" />
+        </div>
+      </header>
+    )
+  }
 
   return (
     <header className="border-b py-4">

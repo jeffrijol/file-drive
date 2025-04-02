@@ -15,22 +15,29 @@ export const UserContext = createContext<UserContextType>({
 })
 
 export function UserProvider({ children }: { children: ReactNode }) {
-  const supabase = createClient()
-  const [user, setUser] = useState<User | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const [state, setState] = useState<UserContextType>({
+    user: null,
+    isLoading: true
+  })
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      setUser(session?.user ?? null)
-      setIsLoading(false)
-    })
+    const supabase = createClient()
+    
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setState({
+          user: session?.user ?? null,
+          isLoading: false
+        })
+      }
+    )
 
     return () => subscription?.unsubscribe()
-  }, [supabase])
+  }, [])
 
   return (
-    <UserContext.Provider value={{ user, isLoading }}>
-      {children}
+    <UserContext.Provider value={state}>
+      {!state.isLoading && children}
     </UserContext.Provider>
   )
 }
@@ -38,7 +45,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
 export const useUser = () => {
   const context = useContext(UserContext)
   if (!context) {
-    throw new Error('useUser must be used within a UserProvider')
+    throw new Error('useUser debe usarse dentro de UserProvider')
   }
   return context
 }

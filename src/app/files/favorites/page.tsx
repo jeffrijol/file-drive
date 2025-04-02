@@ -29,5 +29,5 @@ async function FavoriteFiles() {
   if (error) return <div>Error cargando favoritos</div>
   if (!data?.length) return <div>No hay archivos favoritos</div>
 
-  return <FileBrowser data={data} />
+  // return <FileBrowser data={data} />
 }

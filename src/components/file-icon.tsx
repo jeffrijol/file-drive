@@ -10,6 +10,7 @@ import {
   Archive,
   FileCode
 } from 'lucide-react'
+import { JSX } from 'react'
 
 interface FileIconProps {
   type: string

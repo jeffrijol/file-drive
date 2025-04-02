@@ -1,24 +1,26 @@
-import Link from "next/link";
+'use client'
+
+import { Skeleton } from '@/components/ui/skeleton'
+import { useUser } from '@/providers/user-provider'
 
 export function Footer() {
-  return (
-    <div className="h-40 bg-gray-100 mt-12 flex items-center">
-      <div className="container mx-auto flex justify-between items-center">
-        <div></div>
+  const { isLoading } = useUser()
 
-        <Link className="text-blue-900 hover:text-blue-500" href="/privacy">
-          Nuestra sociedad
-        </Link>
-        <Link
-          className="text-blue-900 hover:text-blue-500"
-          href="/terms-of-service"
-        >
-          Política de privacidad
-        </Link>
-        <Link className="text-blue-900 hover:text-blue-500" href="/about">
-          Sobro nosotros
-        </Link>
+  if (isLoading) {
+    return (
+      <footer className="border-t mt-auto">
+        <div className="container">
+          <Skeleton className="h-6 w-full max-w-xs mx-auto" />
+        </div>
+      </footer>
+    )
+  }
+
+  return (
+    <footer className="border-t py-4 mt-auto">
+      <div className="container text-center text-sm text-muted-foreground">
+        © {new Date().getFullYear()} FileDrive. Todos los derechos reservados.
       </div>
-    </div>
-  );
+    </footer>
+  )
 }
